@@ -19,13 +19,15 @@ struct ContentView: View {
                         text = String(newValue.prefix(10))
                     }
                 }
-            LimitedTextField(title: "UIKit Limited TextField", limit: 10, text: $limitedText)
+                
+            LimitedTextField(title: "Limited TextField", limit: 10, text: $limitedText)
             
         }
         .padding()
     }
 }
 
+#if os(iOS)
 struct LimitedTextField: View {
     var title: String
     var textLimit: UInt
@@ -92,6 +94,109 @@ struct CustomTextFieldView: UIViewRepresentable {
         }
     }
 }
+#else
+struct LimitedTextField: View {
+    var title: String
+    var textLimit: UInt
+    @Binding public var text: String
+    
+    init(title: String, limit: UInt, text: Binding<String>) {
+        self.title = title
+        self.textLimit = limit
+        _text = text
+    }
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            CustomTextFieldView(text: $text, characterLimit: textLimit)
+        }
+    }
+}
+
+struct CustomTextFieldView: NSViewRepresentable {
+    typealias NSViewType = NSTextField
+    
+    @Binding var text: String
+    var characterLimit: UInt
+    
+    init(text: Binding<String>, characterLimit: UInt) {
+        _text = text
+        self.characterLimit = characterLimit
+    }
+    
+    func makeNSView(context: Context) -> NSTextField {
+        let textField = NSTextField()
+        textField.formatter = CustomTextFieldFormatter(maxLength: characterLimit)
+        textField.focusRingType = .none
+        textField.isBordered = false
+        textField.backgroundColor = .clear
+        textField.alignment = .left
+        textField.delegate = context.coordinator
+        textField.placeholderString = "AppKit Limited TextField"
+        return textField
+    }
+    
+    func updateNSView(_ nsView: NSTextField, context: Context) {
+        nsView.stringValue = text
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        return Coordinator(text: $text)
+    }
+    
+    class Coordinator: NSObject, NSTextFieldDelegate {
+        @Binding var text: String
+        
+        init(text: Binding<String>) {
+            _text = text
+        }
+        
+        func controlTextDidChange(_ obj: Notification) {
+            self.text = (obj.object as! NSTextField).stringValue
+        }
+    }
+    
+    class CustomTextFieldFormatter: Formatter {
+        var maxLength: UInt
+        
+        init(maxLength: UInt) {
+            self.maxLength = maxLength
+            super.init()
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        override func string(for obj: Any?) -> String? {
+            return obj as? String
+        }
+        
+        override func getObjectValue(_ obj: AutoreleasingUnsafeMutablePointer<AnyObject?>?,
+                                     for string: String, errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?) -> Bool {
+            obj?.pointee = string as AnyObject
+            return true
+        }
+        
+        override func isPartialStringValid(_ partialStringPtr: AutoreleasingUnsafeMutablePointer<NSString>,
+                                           proposedSelectedRange proposedSelRangePtr: NSRangePointer?,
+                                           originalString origString: String,
+                                           originalSelectedRange origSelRange: NSRange,
+                                           errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?) -> Bool {
+            
+            if partialStringPtr.pointee.length > maxLength {
+                return false
+            }
+            return true
+        }
+        
+        override func attributedString(for obj: Any, withDefaultAttributes attrs: [NSAttributedString.Key : Any]? = nil) -> NSAttributedString? {
+            return nil
+        }
+    }
+}
+
+#endif
 
 #Preview {
     ContentView()
