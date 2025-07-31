@@ -127,9 +127,6 @@ struct CustomTextFieldView: NSViewRepresentable {
     func makeNSView(context: Context) -> NSTextField {
         let textField = NSTextField()
         textField.formatter = CustomTextFieldFormatter(maxLength: characterLimit)
-        textField.focusRingType = .none
-        textField.isBordered = false
-        textField.backgroundColor = .clear
         textField.alignment = .left
         textField.delegate = context.coordinator
         textField.placeholderString = "AppKit Limited TextField"
