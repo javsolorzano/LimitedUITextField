@@ -12,7 +12,7 @@ struct ContentView: View {
     @State private var limitedText: String = ""
     var body: some View {
         VStack {
-            TextField("SwiftUI Limited TextField", text: $text, prompt: Text("TextField"))
+            TextField("SwiftUI Limited TextField", text: $text, prompt: Text("SwiftUI Limited TextField"))
                 .onChange(of: text) { oldValue, newValue in
                     /// This *works* but users can replace the text at the beginning and it will truncate the text at the end
                     if newValue.count > 10 {
@@ -58,7 +58,7 @@ struct CustomTextFieldView: UIViewRepresentable {
     func makeUIView(context: Context) -> UITextField {
         let textField = UITextField()
         textField.backgroundColor = .clear
-        textField.placeholder = "CustomTextField"
+        textField.placeholder = "UIKit Limited TextField"
         textField.textAlignment = .left
         textField.delegate = context.coordinator
         return textField
