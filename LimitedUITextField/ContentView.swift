@@ -12,13 +12,14 @@ struct ContentView: View {
     @State private var limitedText: String = ""
     var body: some View {
         VStack {
-            TextField("Name TextField", text: $text, prompt: Text("TextField"))
+            TextField("SwiftUI Limited TextField", text: $text, prompt: Text("TextField"))
                 .onChange(of: text) { oldValue, newValue in
+                    /// This *works* but users can replace the text at the beginning and it will truncate the text at the end
                     if newValue.count > 10 {
                         text = String(newValue.prefix(10))
                     }
                 }
-            LimitedTextField(title: "LimitedTextField", limit: 10, text: $limitedText)
+            LimitedTextField(title: "UIKit Limited TextField", limit: 10, text: $limitedText)
             
         }
         .padding()
@@ -63,14 +64,17 @@ struct CustomTextFieldView: UIViewRepresentable {
         return textField
     }
     
+    /* START - SwiftUI Bridge Layer */
     func updateUIView(_ uiView: UITextField, context: Context) {
-        uiView.text = text
+        uiView.text = text // Update SwiftUI text binding
     }
     
     func makeCoordinator() -> Coordinator {
+        // Set the coordinator to handle text field delegate events
         return Coordinator(text: $text, maxLength: characterLimit)
     }
-    
+    /* END - SwiftUI Bridge Layer */
+
     class Coordinator: NSObject, UITextFieldDelegate {
         @Binding var text: String
         let MAX_LENGTH: UInt
@@ -88,7 +92,6 @@ struct CustomTextFieldView: UIViewRepresentable {
         }
     }
 }
-
 
 #Preview {
     ContentView()
