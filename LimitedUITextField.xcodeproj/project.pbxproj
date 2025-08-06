@@ -10,9 +10,23 @@
 		54DD759C2E3BD83B0020C15F /* LimitedUITextField.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LimitedUITextField.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		548350D42E43A2E400B84931 /* Exceptions for "LimitedUITextField" folder in "LimitedUITextField" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			platformFiltersByRelativePath = {
+				CustomTextFieldView_iOS.swift = (ios, );
+				CustomTextFieldView_macOS.swift = (macos, );
+			};
+			target = 54DD759B2E3BD83B0020C15F /* LimitedUITextField */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		54DD759E2E3BD83B0020C15F /* LimitedUITextField */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				548350D42E43A2E400B84931 /* Exceptions for "LimitedUITextField" folder in "LimitedUITextField" target */,
+			);
 			path = LimitedUITextField;
 			sourceTree = "<group>";
 		};
